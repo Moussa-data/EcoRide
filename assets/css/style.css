@@ -1,0 +1,194 @@
+:root {
+  --green: #2ecc71;
+  --dark-green: #27ae60;
+  --light-gray: #ecf0f1;
+  --text: #2c3e50;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--light-gray);
+  color: var(--text);
+}
+
+/* HEADER */
+header {
+  background: var(--green);
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+nav a {
+  margin-left: 1rem;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* HERO SECTION */
+.hero {
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.hero h1 {
+  margin-top: 0;
+}
+
+.search-form {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.search-form input {
+  padding: 0.7rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  flex: 1;
+}
+
+.search-form button {
+  background: var(--dark-green);
+  color: white;
+  border: none;
+  padding: 0.7rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* FOOTER */
+footer {
+  margin-top: 3rem;
+  padding: 1rem 2rem;
+  background: #dff5e8;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* FORMULAIRE D'INSCRIPTION */
+.form-register {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.form-register label {
+  font-weight: 600;
+}
+
+.form-register input {
+  padding: 0.7rem 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.form-register button {
+  margin-top: 1rem;
+  background: var(--dark-green);
+  color: white;
+  border: none;
+  padding: 0.8rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* LISTE DES COVOITURAGES */
+.rides-list {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.ride-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 0 8px rgba(0,0,0,0.08);
+}
+
+.ride-card h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.ride-card p {
+  margin: 0.2rem 0;
+}
+
+.ride-card button {
+  margin-top: 0.8rem;
+  background: var(--green);
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.ride-detail {
+  margin-top: 1.5rem;
+  padding: 1rem 1.2rem;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.05);
+}
+
+.ride-detail h2 {
+  margin-top: 0;
+}
+
+.review {
+  margin-top: 0.8rem;
+  padding: 0.8rem;
+  background: #f8fdf9;
+  border-radius: 6px;
+  border: 1px solid #d9f3e0;
+}
+
+.btn-link {
+  display: inline-block;
+  margin-top: 1rem;
+  text-decoration: none;
+  color: white;
+  background: var(--green);
+  padding: 0.6rem 1rem;
+  border-radius: 5px;
+}
+
+.btn-primary {
+  margin-left: 1rem;
+  margin-top: 1rem;
+  background: var(--dark-green);
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.search-form select {
+  padding: 0.7rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
