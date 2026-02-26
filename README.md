@@ -58,6 +58,17 @@ Projet réalisé dans le cadre de l’ECF Développeur Web et Web Mobile.
 - `sql/` → Scripts base de données
 - `assets/` → CSS
 
+## 📋 Gestion de projet
+
+Suivi du projet sur Trello :  
+🔗 https://trello.com/invite/b/699ac9be3c2967bdf8935592/ATTIa84a2afb9d946e1b3627baa61502a45e904AC793/ecoride
+
+Ce board contient :
+- Backlog des fonctionnalités
+- Cartes “À faire”, “En cours”, “Terminé”
+- Organisation des US du projet
+- Suivi des corrections et tests
+
 ---
 
 ## 📌 Auteur
