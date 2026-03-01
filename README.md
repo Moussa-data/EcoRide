@@ -67,7 +67,7 @@ Ce board contient :
 - Backlog des fonctionnalités
 - Cartes “À faire”, “En cours”, “Terminé”
 - Organisation des US du projet
-- Suivi des corrections et tests
+- Suivi des corrections et testsls
 
 ---
 
