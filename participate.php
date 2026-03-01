@@ -70,13 +70,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         <?php if ($credits <= 0): ?>
           <p style="color:red;">Crédits insuffisants.</p>
-          <a class="btn-link" href="covoiturage_detail_db.php?id=<?= (int)$ride['id'] ?>">Retour</a>
+          <a class="btn-link" href="covoiturage_detail.php?id=<?= (int)$ride['id'] ?>">Retour</a>
         <?php elseif ((int)$ride['driver_id'] === $userId): ?>
           <p style="color:red;">Vous ne pouvez pas réserver votre propre trajet.</p>
-          <a class="btn-link" href="covoiturage_detail_db.php?id=<?= (int)$ride['id'] ?>">Retour</a>
+          <a class="btn-link" href="covoiturage_detail.php?id=<?= (int)$ride['id'] ?>">Retour</a>
         <?php elseif ((int)$ride['places_restantes'] <= 0): ?>
           <p style="color:red;">Plus de places disponibles.</p>
-          <a class="btn-link" href="covoiturage_detail_db.php?id=<?= (int)$ride['id'] ?>">Retour</a>
+          <a class="btn-link" href="covoiturage_detail.php?id=<?= (int)$ride['id'] ?>">Retour</a>
         <?php else: ?>
           <form method="POST" action="participate.php">
             <input type="hidden" name="id" value="<?= (int)$ride['id'] ?>">
@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             <button type="submit">Confirmer (déduire 1 crédit)</button>
           </form>
 
-          <a class="btn-link" href="covoiturage_detail_db.php?id=<?= (int)$ride['id'] ?>">Annuler</a>
+          <a class="btn-link" href="covoiturage_detail.php?id=<?= (int)$ride['id'] ?>">Annuler</a>
         <?php endif; ?>
       </section>
     </main>
