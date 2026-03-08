@@ -7,6 +7,10 @@ $userName = !empty($_SESSION['user']['pseudo']) ? $_SESSION['user']['pseudo'] : 
 ?>
 
 <header class="site-header">
+  <div class="logo-bar">
+    <a href="index.php" class="site-logo">EcoRide</a>
+  </div>
+
   <?php if ($userName): ?>
     <div class="user-banner">
       <span class="user-label">Bonjour</span>
