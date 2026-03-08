@@ -107,7 +107,7 @@ if ($rideId <= 0) {
 }
 
 if (empty($_SESSION['participate_token']) || !hash_equals($_SESSION['participate_token'], $token)) {
-    header("Location: covoiturage_detail_db.php?id=" . $rideId . "&error=" . urlencode("Confirmation invalide. Réessaie."));
+    header("Location: covoiturage_detail.php?id=" . $rideId . "&error=" . urlencode("Confirmation invalide. Réessaie."));
     exit;
 }
 unset($_SESSION['participate_token']);

@@ -2,83 +2,112 @@
 session_start();
 require __DIR__ . '/includes/db_connect.php';
 
-$rideId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$where = [];
+$params = [];
 
-$stmt = $pdo->prepare("
-  SELECT 
-    r.*,
-    u.pseudo AS driver_pseudo,
-    (SELECT COUNT(*) FROM bookings b WHERE b.ride_id = r.id AND b.status = 'confirmed') AS nb_reservations
-  FROM rides r
-  LEFT JOIN users u ON u.id = r.driver_id
-  WHERE r.id = ?
-");
-$stmt->execute([$rideId]);
-$ride = $stmt->fetch();
+$depart = isset($_GET['depart']) ? trim($_GET['depart']) : '';
+$arrivee = isset($_GET['arrivee']) ? trim($_GET['arrivee']) : '';
+$date = isset($_GET['date_ride']) ? trim($_GET['date_ride']) : '';
+$eco = isset($_GET['ecologique']) ? trim($_GET['ecologique']) : '';
+$prixMax = isset($_GET['prix_max']) ? trim($_GET['prix_max']) : '';
 
-$errorMsg = $_GET['error'] ?? '';
-$userId   = $_SESSION['user']['id'] ?? null;
+if ($depart !== '') {
+    $where[] = "LOWER(r.depart) LIKE ?";
+    $params[] = '%' . mb_strtolower($depart, 'UTF-8') . '%';
+}
 
-$connected = !empty($_SESSION['user']);
-$isOwner   = $connected && $ride && ((int)$ride['driver_id'] === (int)$userId);
-$hasPlaces = $ride && ((int)$ride['places_restantes'] > 0);
+if ($arrivee !== '') {
+    $where[] = "LOWER(r.arrivee) LIKE ?";
+    $params[] = '%' . mb_strtolower($arrivee, 'UTF-8') . '%';
+}
+
+if ($date !== '') {
+    $where[] = "r.date_ride = ?";
+    $params[] = $date;
+}
+
+if ($eco === '1') {
+    $where[] = "r.ecologique = 1";
+}
+
+if ($prixMax !== '' && is_numeric($prixMax)) {
+    $where[] = "r.prix <= ?";
+    $params[] = (float)$prixMax;
+}
+
+$allowedSort = [
+    'date' => 'r.date_ride ASC, r.heure_depart ASC',
+    'prix_asc' => 'r.prix ASC',
+    'prix_desc' => 'r.prix DESC'
+];
+
+$sortKey = isset($_GET['sort']) ? $_GET['sort'] : 'date';
+$orderBy = $allowedSort[$sortKey] ?? $allowedSort['date'];
+
+$sql = "
+    SELECT r.*, u.pseudo AS driver_pseudo
+    FROM rides r
+    LEFT JOIN users u ON u.id = r.driver_id
+";
+
+if (!empty($where)) {
+    $sql .= " WHERE " . implode(" AND ", $where);
+}
+
+$sql .= " ORDER BY $orderBy";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+$rides = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoRide - Détail</title>
-
-  <!-- IMPORTANT : adapte le chemin CSS selon ton projet -->
-  <!-- Si ton CSS est à la racine : -->
-  <!-- <link rel="stylesheet" href="style.css"> -->
-
-  <!-- Si ton CSS est dans assets/css/style.css : -->
-  <link rel="stylesheet" href="assets/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoRide - Covoiturages</title>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
 <?php include 'includes/header.php'; ?>
 
 <main class="hero">
-  <?php if (!$ride): ?>
-    <h1>Covoiturage introuvable</h1>
-    <a class="btn-link" href="covoiturages_db.php">Retour</a>
+    <h1>Liste des covoiturages</h1>
 
-  <?php else: ?>
-    <h1><?= htmlspecialchars($ride['depart']) ?> → <?= htmlspecialchars($ride['arrivee']) ?></h1>
+    <form method="GET" action="covoiturages_db.php" class="search-form">
+        <input type="text" name="depart" placeholder="Ville de départ" value="<?= htmlspecialchars($depart) ?>">
+        <input type="text" name="arrivee" placeholder="Ville d'arrivée" value="<?= htmlspecialchars($arrivee) ?>">
+        <input type="date" name="date_ride" value="<?= htmlspecialchars($date) ?>">
 
-    <?php if (!empty($errorMsg)): ?>
-      <div style="color:red; margin:0.6rem 0;"><?= htmlspecialchars($errorMsg) ?></div>
-    <?php endif; ?>
+        <select name="sort">
+            <option value="date" <?= $sortKey === 'date' ? 'selected' : '' ?>>Trier par date</option>
+            <option value="prix_asc" <?= $sortKey === 'prix_asc' ? 'selected' : '' ?>>Prix croissant</option>
+            <option value="prix_desc" <?= $sortKey === 'prix_desc' ? 'selected' : '' ?>>Prix décroissant</option>
+        </select>
 
-    <p><strong>Chauffeur :</strong> <?= htmlspecialchars($ride['driver_pseudo'] ?? '—') ?></p>
-    <p><strong>Réservations :</strong> <?= (int)$ride['nb_reservations'] ?></p>
-    <p><strong>Date :</strong> <?= htmlspecialchars($ride['date_ride']) ?></p>
-    <p><strong>Heure :</strong> <?= htmlspecialchars($ride['heure_depart']) ?> → <?= htmlspecialchars($ride['heure_arrivee']) ?></p>
-    <p><strong>Prix :</strong> <?= htmlspecialchars($ride['prix']) ?> €</p>
-    <p><strong>Places restantes :</strong> <?= (int)$ride['places_restantes'] ?></p>
-    <p><strong>Écologique :</strong> <?= ((int)$ride['ecologique'] === 1) ? "🚗⚡ Oui" : "❌ Non" ?></p>
+        <button type="submit">Rechercher</button>
+    </form>
 
-    <a class="btn-link" href="covoiturages_db.php">← Retour</a>
+    <section class="rides-list">
+        <?php if (empty($rides)): ?>
+            <p style="margin-top:1rem;">Aucun covoiturage trouvé.</p>
+        <?php else: ?>
+            <?php foreach ($rides as $ride): ?>
+                <article class="ride-card" style="margin:1rem 0; padding:1rem; border:1px solid #ddd; border-radius:8px;">
+                    <h2><?= htmlspecialchars($ride['depart']) ?> → <?= htmlspecialchars($ride['arrivee']) ?></h2>
+                    <p><strong>Chauffeur :</strong> <?= htmlspecialchars($ride['driver_pseudo'] ?? '—') ?></p>
+                    <p><strong>Date :</strong> <?= htmlspecialchars($ride['date_ride']) ?></p>
+                    <p><strong>Heure :</strong> <?= htmlspecialchars($ride['heure_depart']) ?> → <?= htmlspecialchars($ride['heure_arrivee']) ?></p>
+                    <p><strong>Prix :</strong> <?= htmlspecialchars($ride['prix']) ?> €</p>
+                    <p><strong>Places restantes :</strong> <?= (int)$ride['places_restantes'] ?></p>
+                    <p><strong>Écologique :</strong> <?= ((int)$ride['ecologique'] === 1) ? '🚗⚡ Oui' : '❌ Non' ?></p>
 
-    <?php if (!$connected): ?>
-      <p style="margin-top:1rem; color:#777;">Connecte-toi pour participer.</p>
-      <a class="btn-link" href="login.php">Se connecter</a>
-
-    <?php elseif ($isOwner): ?>
-      <p style="margin-top:1rem; color:red;">Tu ne peux pas réserver ton propre trajet.</p>
-
-    <?php elseif (!$hasPlaces): ?>
-      <p style="margin-top:1rem; color:red;">Plus de places disponibles.</p>
-
-    <?php else: ?>
-      <a class="btn-link" href="participate.php?id=<?= (int)$ride['id'] ?>">
-        Participer (1 crédit)
-      </a>
-    <?php endif; ?>
-  <?php endif; ?>
+                    <a class="btn-link" href="covoiturage_detail.php?id=<?= (int)$ride['id'] ?>">Voir le détail</a>
+                </article>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </section>
 </main>
 
 <?php include 'includes/footer.php'; ?>
