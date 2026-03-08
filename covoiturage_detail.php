@@ -27,6 +27,21 @@ if (!$ride) {
 $userId = $_SESSION['user']['id'] ?? null;
 $isLogged = !empty($_SESSION['user']);
 $isOwner = $isLogged && ((int)$ride['driver_id'] === (int)$userId);
+
+
+$alreadyParticipating = false;
+
+if ($isLogged) {
+    $stmtBooking = $pdo->prepare("
+        SELECT id
+        FROM bookings
+        WHERE user_id = ? AND ride_id = ? AND status = 'confirmed'
+        LIMIT 1
+    ");
+    $stmtBooking->execute([$userId, $ride['id']]);
+    $alreadyParticipating = (bool)$stmtBooking->fetch();
+}
+
 ?>
 <!doctype html>
 <html lang="fr">
@@ -65,12 +80,15 @@ $isOwner = $isLogged && ((int)$ride['driver_id'] === (int)$userId);
   <?php elseif ($isOwner): ?>
     <p style="color:red;">Tu ne peux pas réserver ton propre trajet.</p>
 
-  <?php elseif ((int)$ride['places_restantes'] <= 0): ?>
-    <p style="color:red;">Plus de places disponibles.</p>
+  <?php elseif ($alreadyParticipating): ?>
+  <p style="color:red;">Tu participes déjà à ce trajet.</p>
 
-  <?php else: ?>
-    <a href="participate.php?id=<?= (int)$ride['id'] ?>">Participer (1 crédit)</a>
-  <?php endif; ?>
+<?php elseif ((int)$ride['places_restantes'] <= 0): ?>
+  <p style="color:red;">Plus de places disponibles.</p>
+
+<?php else: ?>
+  <a href="participate.php?id=<?= (int)$ride['id'] ?>">Participer (1 crédit)</a>
+<?php endif; ?>
 </main>
 
 <?php include 'includes/footer.php'; ?>
