@@ -3,6 +3,7 @@ session_start();
 require __DIR__ . '/includes/db_connect.php';
 
 $rideId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$errorMsg = $_GET['error'] ?? '';
 
 $stmt = $pdo->prepare("
   SELECT r.*, u.pseudo AS driver_pseudo
@@ -26,7 +27,6 @@ if (!$ride) {
 $userId = $_SESSION['user']['id'] ?? null;
 $isLogged = !empty($_SESSION['user']);
 $isOwner = $isLogged && ((int)$ride['driver_id'] === (int)$userId);
-
 ?>
 <!doctype html>
 <html lang="fr">
@@ -42,6 +42,12 @@ $isOwner = $isLogged && ((int)$ride['driver_id'] === (int)$userId);
 
 <main style="max-width:900px;margin:2rem auto;padding:1rem;">
   <h1><?= htmlspecialchars($ride['depart']) ?> → <?= htmlspecialchars($ride['arrivee']) ?></h1>
+
+  <?php if (!empty($errorMsg)): ?>
+    <div class="error-message">
+      <?= htmlspecialchars($errorMsg) ?>
+    </div>
+  <?php endif; ?>
 
   <p><strong>Chauffeur :</strong> <?= htmlspecialchars($ride['driver_pseudo'] ?? '—') ?></p>
   <p><strong>Date :</strong> <?= htmlspecialchars($ride['date_ride']) ?></p>
