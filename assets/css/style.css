@@ -192,3 +192,24 @@ footer {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
+.user-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+.user-label {
+  color: #ddd;
+  font-size: 14px;
+}
+
+.user-name {
+  color: #fff;
+  font-weight: 700;
+  background: rgba(255,255,255,0.12);
+  padding: 4px 10px;
+  border-radius: 999px;
+}

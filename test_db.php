@@ -1,3 +1,0 @@
-<?php
-require __DIR__ . "/includes/db_connect.php";
-echo "✅ Connexion MySQL OK";
