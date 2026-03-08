@@ -84,7 +84,7 @@ $bookings = $stmt->fetchAll();
           <p><strong>Prix :</strong> <?= htmlspecialchars($b['prix']) ?> €</p>
           <p><strong>Écologique :</strong> <?= ((int)$b['ecologique'] === 1) ? "🚗⚡ Oui" : "❌ Non" ?></p>
 
-          <a class="btn-link" href="covoiturage_detail_db.php?id=<?= (int)$b['ride_id'] ?>">Voir le trajet</a>
+          <a class="btn-link" href="covoiturage_detail.php?id=<?= (int)$b['ride_id'] ?>">Voir le trajet</a>
 
           <?php if ($b['status'] === 'confirmed'): ?>
             <a class="btn-link"
