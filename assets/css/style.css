@@ -193,23 +193,37 @@ footer {
   border-radius: 5px;
 }
 
-.user-box {
+.site-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-banner {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-left: 12px;
-  margin-right: 12px;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  width: fit-content;
+  margin: 0 auto;
 }
 
 .user-label {
-  color: #ddd;
+  color: white;
   font-size: 14px;
 }
 
 .user-name {
-  color: #fff;
+  color: white;
   font-weight: 700;
-  background: rgba(255,255,255,0.12);
-  padding: 4px 10px;
-  border-radius: 999px;
+}
+
+.main-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
 }
